@@ -40,7 +40,7 @@ class FruitsController < ApplicationController
   # POST /fruits
   # POST /fruits.json
   def create
-    @fruit = Fruit.new(params[:fruit])
+    @fruit = Fruit.new(allowed_parameters)
 
     respond_to do |format|
       if @fruit.save
@@ -59,7 +59,7 @@ class FruitsController < ApplicationController
     @fruit = Fruit.find(params[:id])
 
     respond_to do |format|
-      if @fruit.update_attributes(params[:fruit])
+      if @fruit.update_attributes(allowed_parameters)
         format.html { redirect_to @fruit, :notice => 'Fruit was successfully updated.' }
         format.json { head :no_content }
       else
@@ -79,5 +79,10 @@ class FruitsController < ApplicationController
       format.html { redirect_to fruits_url }
       format.json { head :no_content }
     end
+  end
+
+  private
+  def allowed_parameters
+    params.require(:fruit).permit(:name, :colour, :prickly, :image_url)
   end
 end
